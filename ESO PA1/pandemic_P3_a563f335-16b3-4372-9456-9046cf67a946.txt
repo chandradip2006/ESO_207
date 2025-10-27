@@ -1,0 +1,84 @@
+#include <iostream>
+#define MOD 1000000007
+using namespace std;
+
+void matrix_mul(long long a[40][40], long long b[40][40] , int k){
+    long long c[40][40]={0};
+    for(int i = 0; i<k; i++){
+        for(int j = 0; j<k; j++) {
+            for(int l = 0; l < k; l++){
+                c[i][j] = (c[i][j]+a[i][l]*b[l][j])%MOD;
+            }
+        }
+    }
+    for(int i=0; i<k; i++){
+        for(int j=0; j<k; j++){
+            a[i][j] = c[i][j];
+        }
+    }
+}
+
+void power(long long arr[40][40], long long p , int k){
+    long long arr1[40][40]={0};
+    for (int i=0; i<k; i++) {
+        arr1[i][i] = 1;
+    }
+    while (p>0) {
+        if (p%2==1) {
+            matrix_mul(arr1, arr , k);
+        }
+        matrix_mul(arr, arr , k);
+        p=p/2;
+    }
+    for (int i = 0; i < k; i++) {
+        for (int j = 0; j < k; j++) {
+            arr[i][j]=arr1[i][j];
+        }
+    }
+}
+
+int main() {
+    long long n, d; 
+    int k; 
+    cin>>n>>k>>d; 
+    if (d<k) {
+        long long b[40]={0}; 
+        b[0]=n;              
+        long long ans = n; 
+        for (int j = 1; j <= d; j++) {
+            long long x=0; 
+            for (int i=1; i<=j; i++) {
+                x=(x+(long long)i*b[j - i])%MOD;
+            }
+            b[j]=x;
+            ans=(ans+x)%MOD; 
+        }
+        cout<<ans<<endl;
+    }
+    else{
+        long long b[40]={0};
+        b[0]=n;
+        for (int i=1; i<k; i++) {
+            long long x = 0;
+            for (int j = 1; j <= i; j++) {
+                x = (x+(long long)j*b[i - j])%MOD;
+            }
+            b[i] = x;
+        }
+        long long arr[40][40]={0};
+        for (int i=0; i<k; i++) {
+            arr[0][i] = i + 1;
+        }
+        for (int i=1; i<k; i++) {
+            arr[i][i-1] = 1;
+        }
+        power(arr, d-k+1 , k);
+        long long ans = 0;
+        for (int i=0; i<k; i++){
+            for (int j=0; j<k; j++) {
+                ans = (ans+arr[i][j]*b[k-1-j]) % MOD;
+            }
+        }
+        cout<<ans<<endl;
+    }
+}

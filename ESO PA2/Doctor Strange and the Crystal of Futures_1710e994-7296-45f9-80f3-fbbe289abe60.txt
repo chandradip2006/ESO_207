@@ -1,0 +1,81 @@
+#include<bits/stdc++.h>
+#define MOD 998244353
+using namespace std;
+
+long long power(long long a, long long b) {
+    long long ans = 1;
+    a=a%MOD;
+    while(b>0){
+        if(b%2==1) {
+            ans=(ans*a)%MOD;
+        } 
+        a=(a*a)%MOD;
+        b=b/2;
+    }
+
+    return ans;
+}
+
+long long inverse(long long n) {
+    return power(n, MOD-2);
+}
+
+void products(int s, int e, vector<int>& a, vector<long long>& pre, set<long long>& pdt) {
+    if (s>e) {
+        return;
+    }
+
+    long long curr=(pre[e + 1]*inverse(pre[s]))%MOD;
+    pdt.insert(curr);
+    if(a[s]==a[e]){
+        return;
+    }
+    
+    int mid=a[s]+(a[e]-a[s])/2;
+    auto it=upper_bound(a.begin()+s, a.begin()+e+1, mid);
+    int idx=distance(a.begin(), it);
+
+    if(idx==s||idx==e+1){
+        return;
+    }
+    
+    products(s, idx-1, a, pre, pdt);
+    products(idx, e, a, pre, pdt);
+}
+
+int main() {
+    int t;
+    cin>>t;
+    while(t--){
+        int n, q;
+        cin>>n>>q;
+        vector<int> a(n);
+        for (int i=0;i<n;i++) {
+            cin>>a[i];
+        }
+
+        sort(a.begin(), a.end());
+
+        vector<long long> pre(n+1, 1);
+        for (int i=0;i<n;i++) {
+            pre[i+1]=(pre[i]*a[i])%MOD;
+        }
+
+        set<long long> poss;
+        products(0, n-1, a, pre, poss);
+
+        for (int i=0;i<q;i++) {
+            int p;
+            cin>>p;
+            if(poss.count(p)){
+                cout<<"Yes"<<endl;
+            } 
+            else{
+                cout<<"No"<<endl;
+            }
+        }
+    }
+    
+
+    
+}

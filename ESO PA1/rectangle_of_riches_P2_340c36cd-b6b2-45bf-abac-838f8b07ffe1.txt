@@ -1,0 +1,70 @@
+#include <iostream>
+using namespace std;
+struct subarray {
+    int max_sum;
+    int s;
+    int e;
+};
+
+int max_result(int arr[], int& s, int& e, int n) {
+    int max_sum = arr[0]; 
+    int sum = arr[0]; 
+    s = 0;
+    e = 0;
+    int a = 0;
+
+    for (int i=1; i<n; i++) {
+        sum=sum+arr[i];
+        if (arr[i]>sum) {
+            sum = arr[i];
+            a = i; 
+        }
+        
+        if (sum>max_sum) {
+            max_sum = sum;;
+            s = a; 
+            e = i;
+        }
+    }
+    return max_sum;
+}
+
+int main() {
+    int n, m;
+    cin>>n>>m; 
+    int arr[300][300];
+    for (int i = 0; i<n; i++) {
+        for (int j = 0; j<m; j++) {
+            cin>>arr[i][j];
+        }
+    }
+    int ans = -2000000000; 
+    int l, r, t, b;
+    for (int i=0; i<m; i++) {
+        int temp[n]={0};
+        for (int j = i;j<m; j++) {
+            for (int k = 0; k<n; k++) {
+                temp[k] += arr[k][j];
+            }
+            int t1, b1;
+            int max_sum = max_result(temp, t1, b1, n);
+            if (max_sum>ans) {
+                ans = max_sum;
+                l = i;
+                r = j;
+                t = t1;
+                b = b1;
+            }
+        }
+    }
+
+    if (ans>0) {
+        cout<<"YES"<<endl;
+        cout<<ans<<endl;
+        cout <<t+1<<" "<<l+1<<" "<<b+1<<" "<<r+1<<endl;
+    } 
+    else {
+        cout<<"NO"<<endl;
+    }
+
+}

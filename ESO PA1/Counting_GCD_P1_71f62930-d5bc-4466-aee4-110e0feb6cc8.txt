@@ -1,0 +1,71 @@
+#include <iostream>
+using namespace std;
+struct Data {
+    long long u; 
+    int v;       
+};
+
+long long gcd(long long a, long long b) {
+    while (b!=0) {
+        int temp = a % b;
+        a = b;
+        b = temp;
+    }
+    return a;
+}
+
+int main() {
+    int t;
+    cin>>t;
+    while(t--){
+        int n;
+        int m;
+        cin >> n >> m; 
+        long long a[n] ;
+        for (int i = 0; i < n; ++i) {
+            cin >> a[i]; 
+        }
+        long long ans = 0; 
+        Data part[60];
+        int c = 0; 
+        for (int i = 0; i < n; ++i) {
+            if (a[i] % m != 0) {
+                c = 0;
+                continue; 
+            }
+
+            int x = a[i] / m;
+            Data b[60];
+            int c1 = 0;
+            b[0] = {x, i};
+            c1 = 1;
+
+            for (int j = 0; j < c; ++j) {
+                long long  y = gcd(part[j].u, x);
+                if (y == b[c1 - 1].u) {
+                    b[c1 - 1].v = part[j].v;
+                }
+                else {
+                    b[c1] = {y, part[j].v};
+                    c1++;
+                }
+            }
+            
+            c = c1;
+            for (int j = 0; j < c; ++j) {
+                part[j] = b[j];
+            }
+            long long v1 = i + 1;
+            for (int j = 0; j < c; ++j) {
+                if (part[j].u == 1) {
+                    ans += (v1 - part[j].v);
+                }
+                v1 = part[j].v;
+            }
+        }
+
+        cout << ans << endl; 
+    }
+    
+
+}
